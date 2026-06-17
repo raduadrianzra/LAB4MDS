@@ -2,8 +2,6 @@ from hypothesis import given, assume
 from hypothesis import strategies as st
 from utils import clamp, merge_sorted
 
-
-
 @given(st.integers(), st.integers(), st.integers())
 def test_clamp_in_bounds(x, lo, hi):
     assume(lo <= hi)
@@ -16,12 +14,12 @@ def test_clamp_idempotent(x, lo, hi):
     once = clamp(x, lo, hi)
     assert clamp(once, lo, hi) == once
 
-@given(st.integers(), st.integers(), st.integers())
-def test_clamp_noop_when_in_range(x, lo, hi):
+@given(st.integers(), st.integers(), st.data())
+def test_clamp_noop_when_in_range(lo, hi, data):
     assume(lo <= hi)
-    assume(lo <= x <= hi)
+    x = data.draw(st.integers(min_value=lo, max_value=hi))
     assert clamp(x, lo, hi) == x
-    
+
 
 sorted_lists = st.lists(st.integers()).map(sorted)
 
